@@ -13,6 +13,10 @@
 		8E1ECE082314C59100C8603D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E1ECE072314C59100C8603D /* Assets.xcassets */; };
 		8E1ECE0B2314C59100C8603D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E1ECE092314C59100C8603D /* LaunchScreen.storyboard */; };
 		8E1ECE0E2314C59100C8603D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE0D2314C59100C8603D /* main.m */; };
+		8E1ECE172314C8F600C8603D /* RCTBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE162314C8F600C8603D /* RCTBridge.m */; };
+		8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE1F2314D1DE00C8603D /* RCTCxxBridge.mm */; };
+		8E1ECE232314E2E100C8603D /* RCTPerformanceLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE222314E2E100C8603D /* RCTPerformanceLogger.m */; };
+		8E1ECEAC23177DAC00C8603D /* RCTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECEAB23177DAC00C8603D /* RCTUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,17 @@
 		8E1ECE0A2314C59100C8603D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8E1ECE0C2314C59100C8603D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8E1ECE0D2314C59100C8603D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8E1ECE152314C8F600C8603D /* RCTBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridge.h; sourceTree = "<group>"; };
+		8E1ECE162314C8F600C8603D /* RCTBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTBridge.m; sourceTree = "<group>"; };
+		8E1ECE1B2314CCC200C8603D /* RCTBridge+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTBridge+Private.h"; sourceTree = "<group>"; };
+		8E1ECE1F2314D1DE00C8603D /* RCTCxxBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTCxxBridge.mm; sourceTree = "<group>"; };
+		8E1ECE212314E2E100C8603D /* RCTPerformanceLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTPerformanceLogger.h; sourceTree = "<group>"; };
+		8E1ECE222314E2E100C8603D /* RCTPerformanceLogger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTPerformanceLogger.m; sourceTree = "<group>"; };
+		8E1ECE242314E79900C8603D /* RCTDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTDefines.h; sourceTree = "<group>"; };
+		8E1ECE9A2316A1AC00C8603D /* RCTBridgeModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridgeModule.h; sourceTree = "<group>"; };
+		8E1ECE9B2316AAE100C8603D /* RCTBridgeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridgeDelegate.h; sourceTree = "<group>"; };
+		8E1ECEA823177D6100C8603D /* RCTUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTUtils.h; sourceTree = "<group>"; };
+		8E1ECEAB23177DAC00C8603D /* RCTUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +73,8 @@
 		8E1ECDFD2314C59000C8603D /* ReactNativeTest */ = {
 			isa = PBXGroup;
 			children = (
+				8E1ECE1C2314D13000C8603D /* CxxBridge */,
+				8E1ECE142314C87700C8603D /* Core */,
 				8E1ECDFE2314C59000C8603D /* AppDelegate.h */,
 				8E1ECDFF2314C59000C8603D /* AppDelegate.m */,
 				8E1ECE012314C59000C8603D /* ViewController.h */,
@@ -69,6 +86,31 @@
 				8E1ECE0D2314C59100C8603D /* main.m */,
 			);
 			path = ReactNativeTest;
+			sourceTree = "<group>";
+		};
+		8E1ECE142314C87700C8603D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				8E1ECE152314C8F600C8603D /* RCTBridge.h */,
+				8E1ECE162314C8F600C8603D /* RCTBridge.m */,
+				8E1ECE1B2314CCC200C8603D /* RCTBridge+Private.h */,
+				8E1ECE212314E2E100C8603D /* RCTPerformanceLogger.h */,
+				8E1ECE222314E2E100C8603D /* RCTPerformanceLogger.m */,
+				8E1ECE242314E79900C8603D /* RCTDefines.h */,
+				8E1ECE9A2316A1AC00C8603D /* RCTBridgeModule.h */,
+				8E1ECE9B2316AAE100C8603D /* RCTBridgeDelegate.h */,
+				8E1ECEA823177D6100C8603D /* RCTUtils.h */,
+				8E1ECEAB23177DAC00C8603D /* RCTUtils.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		8E1ECE1C2314D13000C8603D /* CxxBridge */ = {
+			isa = PBXGroup;
+			children = (
+				8E1ECE1F2314D1DE00C8603D /* RCTCxxBridge.mm */,
+			);
+			path = CxxBridge;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,9 +183,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E1ECE172314C8F600C8603D /* RCTBridge.m in Sources */,
+				8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */,
 				8E1ECE032314C59000C8603D /* ViewController.m in Sources */,
 				8E1ECE0E2314C59100C8603D /* main.m in Sources */,
+				8E1ECE232314E2E100C8603D /* RCTPerformanceLogger.m in Sources */,
 				8E1ECE002314C59000C8603D /* AppDelegate.m in Sources */,
+				8E1ECEAC23177DAC00C8603D /* RCTUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

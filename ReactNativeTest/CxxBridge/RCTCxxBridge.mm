@@ -9,6 +9,7 @@
 #import "RCTBridge+Private.h"
 #import "RCTBridge.h"
 #import "RCTBridgeDelegate.h"
+#import "RCTModuleData.h"
 
 @interface RCTCxxBridge ()
 
@@ -25,8 +26,11 @@
     RCTDisplayLink *_displayLink;
     
     // Native modules
+    // key为moduleName，value为
     NSMutableDictionary<NSString *, RCTModuleData *> *_moduleDataByName;
+    // 里面是moduleData，是创建好的moduleData
     NSMutableArray<RCTModuleData *> *_moduleDataByID;
+    // 里面是moduleClass，是在创建好moduleData之后，将moduleClass保存进了这个数组，应该是内部使用的
     NSMutableArray<Class> *_moduleClassesByID;
     
     // JS thread management
@@ -105,6 +109,7 @@
     [self registerExtraModules];
     
     // Initialize all native modules that cannot be loaded lazily
+    // RCTGetModuleClasses()返回所有通过+load注册的class的数组
     (void)[self _initializeModules:RCTGetModuleClasses() withDispatchGroup:prepareBridge lazilyDiscovered:NO];
     [self registerExtraLazyModules];
     
@@ -244,6 +249,8 @@
                                 lazilyDiscovered:(BOOL)lazilyDiscovered
 {
     // Set up moduleData for automatically-exported modules
+    // modules中是class，是class遵守了RCTBridgeModule协议，里面都是类方法。
+    // 返回的是moduleData数组
     NSArray<RCTModuleData *> *moduleDataById = [self _registerModulesForClasses:modules lazilyDiscovered:lazilyDiscovered];
     
     if (lazilyDiscovered) {
@@ -257,6 +264,9 @@
         }
 #endif
     } else {
+        
+        //  ---> 看这里
+        
         RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways,
                                 @"-[RCTCxxBridge initModulesWithDispatchGroup:] moduleData.hasInstance", nil);
         // Dispatch module init onto main thread for those modules that require it
@@ -328,9 +338,12 @@
         
         // Instantiate moduleData
         // TODO #13258411: can we defer this until config generation?
+#warning moduleData包含了moduleClass，以及moduleClass是否实现了XX方法的BOOL值b属性。
         moduleData = [[RCTModuleData alloc] initWithModuleClass:moduleClass bridge:self];
         
+        // 将moduleData和moduleName对应保存起来
         _moduleDataByName[moduleName] = moduleData;
+        
         [_moduleClassesByID addObject:moduleClass];
         [moduleDataByID addObject:moduleData];
     }

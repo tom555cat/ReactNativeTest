@@ -17,6 +17,7 @@
 		8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE1F2314D1DE00C8603D /* RCTCxxBridge.mm */; };
 		8E1ECE232314E2E100C8603D /* RCTPerformanceLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE222314E2E100C8603D /* RCTPerformanceLogger.m */; };
 		8E1ECEAC23177DAC00C8603D /* RCTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECEAB23177DAC00C8603D /* RCTUtils.m */; };
+		8E20F449231FA750006BB67F /* RCTModuleData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E20F448231FA750006BB67F /* RCTModuleData.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,8 @@
 		8E1ECE9B2316AAE100C8603D /* RCTBridgeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridgeDelegate.h; sourceTree = "<group>"; };
 		8E1ECEA823177D6100C8603D /* RCTUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTUtils.h; sourceTree = "<group>"; };
 		8E1ECEAB23177DAC00C8603D /* RCTUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTUtils.m; sourceTree = "<group>"; };
+		8E20F447231FA750006BB67F /* RCTModuleData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTModuleData.h; sourceTree = "<group>"; };
+		8E20F448231FA750006BB67F /* RCTModuleData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTModuleData.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +104,8 @@
 				8E1ECE9B2316AAE100C8603D /* RCTBridgeDelegate.h */,
 				8E1ECEA823177D6100C8603D /* RCTUtils.h */,
 				8E1ECEAB23177DAC00C8603D /* RCTUtils.m */,
+				8E20F447231FA750006BB67F /* RCTModuleData.h */,
+				8E20F448231FA750006BB67F /* RCTModuleData.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -186,6 +191,7 @@
 				8E1ECE172314C8F600C8603D /* RCTBridge.m in Sources */,
 				8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */,
 				8E1ECE032314C59000C8603D /* ViewController.m in Sources */,
+				8E20F449231FA750006BB67F /* RCTModuleData.m in Sources */,
 				8E1ECE0E2314C59100C8603D /* main.m in Sources */,
 				8E1ECE232314E2E100C8603D /* RCTPerformanceLogger.m in Sources */,
 				8E1ECE002314C59000C8603D /* AppDelegate.m in Sources */,

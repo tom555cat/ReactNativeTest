@@ -15,6 +15,8 @@
 
 // 居然还弱引用了父类
 @property (nonatomic, weak, readonly) RCTBridge *parentBridge;
+// 所有的moduleData中的instance创建完之后才会设置为YES。
+@property (nonatomic, assign, readonly) BOOL moduleSetupComplete;
 
 @end
 
@@ -274,6 +276,9 @@
         // that we have, otherwise some modules coming from the delegate
         // or module provider block, will not be properly instantiated.
         for (RCTModuleData *moduleData in _moduleDataByID) {
+#warning 这个阶段的moduleData创建module实例的判断条件比较奇怪
+#warning moduleData有module的instance了，并且(不需要在主队列上初始化，或者当前是主队列)
+#warning 打断点查看for循环里的的[moduleData instance]没有执行
             if (moduleData.hasInstance && (!moduleData.requiresMainQueueSetup || RCTIsMainQueue())) {
                 // Modules that were pre-initialized should ideally be set up before
                 // bridge init has finished, otherwise the caller may try to access the
@@ -352,6 +357,11 @@
     RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
     
     return moduleDataByID;
+}
+
+- (void)registerModuleForFrameUpdates:(id<RCTBridgeModule>)module
+                       withModuleData:(RCTModuleData *)moduleData {
+    [_displayLink registerModuleForFrameUpdates:module withModuleData:moduleData];
 }
 
 @end

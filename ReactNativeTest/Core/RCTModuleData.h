@@ -30,12 +30,16 @@ typedef id<RCTBridgeModule>(^RCTBridgeModuleProvider)(void);
 @property (nonatomic, strong, readonly) Class moduleClass;
 
 
+// 如果已经实例化，那么返回YES；如果没有实力化，则返回NO。
+@property (nonatomic, assign, readonly) BOOL hasInstance;
+
 /**
  * Returns the current module instance. Note that this will init the instance
  * if it has not already been created. To check if the module instance exists
  * without causing it to be created, use `hasInstance` instead.
  */
-// 通过moduleClass创建的实例
+// 通过moduleClass创建的实例，如果没有实例就会创建实例。可以通过hasInstance来检查
+// 是否创建了实例。
 @property (nonatomic, strong, readwrite) id<RCTBridgeModule> instance;
 
 

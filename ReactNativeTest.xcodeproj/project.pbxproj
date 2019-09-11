@@ -17,7 +17,9 @@
 		8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE1F2314D1DE00C8603D /* RCTCxxBridge.mm */; };
 		8E1ECE232314E2E100C8603D /* RCTPerformanceLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECE222314E2E100C8603D /* RCTPerformanceLogger.m */; };
 		8E1ECEAC23177DAC00C8603D /* RCTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E1ECEAB23177DAC00C8603D /* RCTUtils.m */; };
-		8E20F449231FA750006BB67F /* RCTModuleData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E20F448231FA750006BB67F /* RCTModuleData.m */; };
+		8E20F449231FA750006BB67F /* RCTModuleData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E20F448231FA750006BB67F /* RCTModuleData.mm */; };
+		8E6B9CD32328C6DD00D1C552 /* RCTDisplayLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */; };
+		8E6B9CD62328CE0000D1C552 /* RCTFrameUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD52328CE0000D1C552 /* RCTFrameUpdate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +45,11 @@
 		8E1ECEA823177D6100C8603D /* RCTUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTUtils.h; sourceTree = "<group>"; };
 		8E1ECEAB23177DAC00C8603D /* RCTUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTUtils.m; sourceTree = "<group>"; };
 		8E20F447231FA750006BB67F /* RCTModuleData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTModuleData.h; sourceTree = "<group>"; };
-		8E20F448231FA750006BB67F /* RCTModuleData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTModuleData.m; sourceTree = "<group>"; };
+		8E20F448231FA750006BB67F /* RCTModuleData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTModuleData.mm; sourceTree = "<group>"; };
+		8E6B9CD12328C6DD00D1C552 /* RCTDisplayLink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTDisplayLink.h; sourceTree = "<group>"; };
+		8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTDisplayLink.m; sourceTree = "<group>"; };
+		8E6B9CD42328CE0000D1C552 /* RCTFrameUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTFrameUpdate.h; sourceTree = "<group>"; };
+		8E6B9CD52328CE0000D1C552 /* RCTFrameUpdate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTFrameUpdate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +111,11 @@
 				8E1ECEA823177D6100C8603D /* RCTUtils.h */,
 				8E1ECEAB23177DAC00C8603D /* RCTUtils.m */,
 				8E20F447231FA750006BB67F /* RCTModuleData.h */,
-				8E20F448231FA750006BB67F /* RCTModuleData.m */,
+				8E20F448231FA750006BB67F /* RCTModuleData.mm */,
+				8E6B9CD12328C6DD00D1C552 /* RCTDisplayLink.h */,
+				8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */,
+				8E6B9CD42328CE0000D1C552 /* RCTFrameUpdate.h */,
+				8E6B9CD52328CE0000D1C552 /* RCTFrameUpdate.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -190,12 +200,14 @@
 			files = (
 				8E1ECE172314C8F600C8603D /* RCTBridge.m in Sources */,
 				8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */,
+				8E6B9CD62328CE0000D1C552 /* RCTFrameUpdate.m in Sources */,
 				8E1ECE032314C59000C8603D /* ViewController.m in Sources */,
-				8E20F449231FA750006BB67F /* RCTModuleData.m in Sources */,
+				8E20F449231FA750006BB67F /* RCTModuleData.mm in Sources */,
 				8E1ECE0E2314C59100C8603D /* main.m in Sources */,
 				8E1ECE232314E2E100C8603D /* RCTPerformanceLogger.m in Sources */,
 				8E1ECE002314C59000C8603D /* AppDelegate.m in Sources */,
 				8E1ECEAC23177DAC00C8603D /* RCTUtils.m in Sources */,
+				8E6B9CD32328C6DD00D1C552 /* RCTDisplayLink.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

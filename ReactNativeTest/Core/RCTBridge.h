@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RCTPerformanceLogger.h"
+#import "RCTBridgeModule.h"
 #import "RCTDefines.h"
 
 @protocol RCTBridgeDelegate;

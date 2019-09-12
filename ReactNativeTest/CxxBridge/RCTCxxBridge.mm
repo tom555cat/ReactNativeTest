@@ -113,6 +113,8 @@
     // Initialize all native modules that cannot be loaded lazily
     // RCTGetModuleClasses()返回所有通过+load注册的class的数组
     (void)[self _initializeModules:RCTGetModuleClasses() withDispatchGroup:prepareBridge lazilyDiscovered:NO];
+    
+    // 只有在debug状态才会执行
     [self registerExtraLazyModules];
     
     [_performanceLogger markStopForTag:RCTPLNativeModuleInit];
@@ -123,13 +125,21 @@
     __weak RCTCxxBridge *weakSelf = self;
     
     // Prepare executor factory (shared_ptr for copy into block)
+#warning executorFactory是一个只能指针
+    // 空只能指针，指向类型为JSExecutorFactory的对象。
     std::shared_ptr<JSExecutorFactory> executorFactory;
+#warning 在start的时候executorClass是空，走的是上边
     if (!self.executorClass) {
+#warning 项目里没设置self.delegate
         if ([self.delegate conformsToProtocol:@protocol(RCTCxxBridgeDelegate)]) {
             id<RCTCxxBridgeDelegate> cxxDelegate = (id<RCTCxxBridgeDelegate>) self.delegate;
             executorFactory = [cxxDelegate jsExecutorFactoryForBridge:self];
         }
         if (!executorFactory) {
+            // ----> 直接在这里
+            // 最安全的分配和使用动态内存的方法是调用make_shared库函数，此函数在动态内存中分配一个对象并初始化它，
+            // 返回指向此对象的shared_ptr。创建时make_shared使用给定的参数来构造给定类型的对象。
+            // 这里就是使用空指针nullptr创建了一个JSCExecutorFactory
             executorFactory = std::make_shared<JSCExecutorFactory>(nullptr);
         }
     } else {
@@ -241,6 +251,55 @@
     RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
+- (void)registerExtraLazyModules
+{
+#if RCT_DEBUG
+    // This is debug-only and only when Chrome is attached, since it expects all modules to be already
+    // available on start up. Otherwise, we can let the lazy module discovery to load them on demand.
+    Class executorClass = [_parentBridge executorClass];
+    if (executorClass && [NSStringFromClass(executorClass) isEqualToString:@"RCTWebSocketExecutor"]) {
+        NSDictionary<NSString *, Class> *moduleClasses = nil;
+        if ([self.delegate respondsToSelector:@selector(extraLazyModuleClassesForBridge:)]) {
+            moduleClasses = [self.delegate extraLazyModuleClassesForBridge:_parentBridge];
+        }
+        
+        if (!moduleClasses) {
+            return;
+        }
+        
+        // This logic is mostly copied from `registerModulesForClasses:`, but with one difference:
+        // we must use the names provided by the delegate method here.
+        for (NSString *moduleName in moduleClasses) {
+            Class moduleClass = moduleClasses[moduleName];
+            if (RCTTurboModuleEnabled() && [moduleClass conformsToProtocol:@protocol(RCTTurboModule)]) {
+                continue;
+            }
+            
+            // Check for module name collisions
+            RCTModuleData *moduleData = _moduleDataByName[moduleName];
+            if (moduleData) {
+                if (moduleData.hasInstance) {
+                    // Existing module was preregistered, so it takes precedence
+                    continue;
+                } else if ([moduleClass new] == nil) {
+                    // The new module returned nil from init, so use the old module
+                    continue;
+                } else if ([moduleData.moduleClass new] != nil) {
+                    // Use existing module since it was already loaded but not yet instantiated.
+                    continue;
+                }
+            }
+            
+            moduleData = [[RCTModuleData alloc] initWithModuleClass:moduleClass bridge:self];
+            
+            _moduleDataByName[moduleName] = moduleData;
+            [_moduleClassesByID addObject:moduleClass];
+            [_moduleDataByID addObject:moduleData];
+        }
+    }
+#endif
+}
+
 - (id<RCTBridgeDelegate>)delegate
 {
     return _parentBridge.delegate;
@@ -294,6 +353,7 @@
         // From this point on, RCTDidInitializeModuleNotification notifications will
         // be sent the first time a module is accessed.
         _moduleSetupComplete = YES;
+        // 主要是需要在主队列上实例化的module，会在这个函数中进行实例化
         [self _prepareModulesWithDispatchGroup:dispatchGroup];
     }
     
@@ -305,6 +365,57 @@
 #endif
     return moduleDataById;
 }
+
+// 主要是需要在主队列上实例化的module，会在这个函数中进行实例化
+- (void)_prepareModulesWithDispatchGroup:(dispatch_group_t)dispatchGroup
+{
+    RCT_PROFILE_BEGIN_EVENT(0, @"-[RCTCxxBridge _prepareModulesWithDispatchGroup]", nil);
+    
+    BOOL initializeImmediately = NO;
+    if (dispatchGroup == NULL) {
+        // If no dispatchGroup is passed in, we must prepare everything immediately.
+        // We better be on the right thread too.
+        RCTAssertMainQueue();
+        initializeImmediately = YES;
+    }
+    
+    // Set up modules that require main thread init or constants export
+    [_performanceLogger setValue:0 forTag:RCTPLNativeModuleMainThread];
+    
+    // 主要是需要从主队列创建module instance进行创建instance
+    for (RCTModuleData *moduleData in _moduleDataByID) {
+        if (moduleData.requiresMainQueueSetup) {
+            // Modules that need to be set up on the main thread cannot be initialized
+            // lazily when required without doing a dispatch_sync to the main thread,
+            // which can result in deadlock. To avoid this, we initialize all of these
+            // modules on the main thread in parallel with loading the JS code, so
+            // they will already be available before they are ever required.
+            dispatch_block_t block = ^{
+                if (self.valid && ![moduleData.moduleClass isSubclassOfClass:[RCTCxxModule class]]) {
+                    [self->_performanceLogger appendStartForTag:RCTPLNativeModuleMainThread];
+                    (void)[moduleData instance];
+                    [moduleData gatherConstants];
+                    [self->_performanceLogger appendStopForTag:RCTPLNativeModuleMainThread];
+                }
+            };
+            
+            if (initializeImmediately && RCTIsMainQueue()) {
+                block();
+            } else {
+                // We've already checked that dispatchGroup is non-null, but this satisifies the
+                // Xcode analyzer
+                if (dispatchGroup) {
+                    dispatch_group_async(dispatchGroup, dispatch_get_main_queue(), block);
+                }
+            }
+            _modulesInitializedOnMainQueue++;
+        }
+    }
+    [_performanceLogger setValue:_modulesInitializedOnMainQueue forTag:RCTPLNativeModuleMainThreadUsesCount];
+    RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
+}
+
+
 
 // 调用中“lazilyDiscovered”为NO
 - (NSArray<RCTModuleData *> *)_registerModulesForClasses:(NSArray<Class> *)moduleClasses

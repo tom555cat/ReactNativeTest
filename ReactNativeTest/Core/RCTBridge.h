@@ -30,6 +30,9 @@ typedef NSArray<id<RCTBridgeModule>> *(^RCTBridgeModuleListProvider)(void);
 // 加载Script的地址
 @property (nonatomic, strong, readonly) NSURL *bundleURL;
 
+#warning 只是说是executor的class，暂时没有更多细节信息
+@property (nonatomic, strong) Class executorClass;
+
 @property (nonatomic, copy, readonly) NSDictionary *launchOptions;
 
 /**

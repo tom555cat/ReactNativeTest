@@ -11,6 +11,14 @@
 #import "RCTBridgeDelegate.h"
 #import "RCTModuleData.h"
 
+#include "JSCExecutorFactory.h"
+#include "RCTCxxUtils.h"
+#include "RCTMessageThread.h"
+#include "Instance.h"
+
+using namespace facebook::jsi;
+using namespace facebook::react;
+
 @interface RCTCxxBridge ()
 
 // 居然还弱引用了父类
@@ -35,9 +43,17 @@
     // 里面是moduleClass，是在创建好moduleData之后，将moduleClass保存进了这个数组，应该是内部使用的
     NSMutableArray<Class> *_moduleClassesByID;
     
+    
+    
     // JS thread management
 #warning 这个线程，什么内容跑在了这个线程上
     NSThread *_jsThread;
+    
+    // 这个C++线程类持有了jsThread的runLoop
+    std::shared_ptr<RCTMessageThread> _jsMessageThread;
+    
+    // This is uniquely owned, but weak_ptr is used.
+    std::shared_ptr<Instance> _reactInstance;
 }
 
 #warning 在子类RCTCxxBridge中干脆又实现了一套performanceLogger实例变量+读写方法
@@ -76,6 +92,122 @@
     }
     return self;
 }
+
+#warning JSThread单独启动了一个线程，而且使用了线程保活的方式，可以与笔记中的线程保活方式进行对比
++ (void)runRunLoop
+{
+    @autoreleasepool {
+        RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge runJSRunLoop] setup", nil);
+        
+        // copy thread name to pthread name
+        pthread_setname_np([NSThread currentThread].name.UTF8String);
+        
+        // Set up a dummy runloop source to avoid spinning
+        CFRunLoopSourceContext noSpinCtx = {0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+        CFRunLoopSourceRef noSpinSource = CFRunLoopSourceCreate(NULL, 0, &noSpinCtx);
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), noSpinSource, kCFRunLoopDefaultMode);
+        CFRelease(noSpinSource);
+        
+        RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
+        
+        // run the run loop
+        while (kCFRunLoopRunStopped != CFRunLoopRunInMode(kCFRunLoopDefaultMode, ((NSDate *)[NSDate distantFuture]).timeIntervalSinceReferenceDate, NO)) {
+            RCTAssert(NO, @"not reached assertion"); // runloop spun. that's bad.
+        }
+    }
+}
+
+// 在js线程上执行任务
+- (void)ensureOnJavaScriptThread:(dispatch_block_t)block
+{
+    RCTAssert(_jsThread, @"This method must not be called before the JS thread is created");
+    
+    // This does not use _jsMessageThread because it may be called early before the runloop reference is captured
+    // and _jsMessageThread is valid. _jsMessageThread also doesn't allow us to shortcut the dispatch if we're
+    // already on the correct thread.
+    
+    if ([NSThread currentThread] == _jsThread) {
+        [self _tryAndHandleError:block];
+    } else {
+        [self performSelector:@selector(_tryAndHandleError:)
+                     onThread:_jsThread
+                   withObject:block
+                waitUntilDone:NO];
+    }
+}
+
+- (void)_tryAndHandleError:(dispatch_block_t)block
+{
+    NSError *error = tryAndReturnError(block);
+    if (error) {
+        [self handleError:error];
+    }
+}
+
+#warning 错误处理以后再看
+- (void)handleError:(NSError *)error
+{
+    // This is generally called when the infrastructure throws an
+    // exception while calling JS.  Most product exceptions will not go
+    // through this method, but through RCTExceptionManager.
+    
+    // There are three possible states:
+    // 1. initializing == _valid && _loading
+    // 2. initializing/loading finished (success or failure) == _valid && !_loading
+    // 3. invalidated == !_valid && !_loading
+    
+    // !_valid && _loading can't happen.
+    
+    // In state 1: on main queue, move to state 2, reset the bridge, and RCTFatal.
+    // In state 2: go directly to RCTFatal.  Do not enqueue, do not collect $200.
+    // In state 3: do nothing.
+    
+    if (self->_valid && !self->_loading) {
+        if ([error userInfo][RCTJSRawStackTraceKey]) {
+            [self.redBox showErrorMessage:[error localizedDescription]
+                             withRawStack:[error userInfo][RCTJSRawStackTraceKey]];
+        }
+        
+        RCTFatal(error);
+        
+        // RN will stop, but let the rest of the app keep going.
+        return;
+    }
+    
+    if (!_valid || !_loading) {
+        return;
+    }
+    
+    // Hack: once the bridge is invalidated below, it won't initialize any new native
+    // modules. Initialize the redbox module now so we can still report this error.
+    RCTRedBox *redBox = [self redBox];
+    
+    _loading = NO;
+    _valid = NO;
+    _moduleRegistryCreated = NO;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self->_jsMessageThread) {
+            // Make sure initializeBridge completed
+            self->_jsMessageThread->runOnQueueSync([] {});
+        }
+        
+        self->_reactInstance.reset();
+        self->_jsMessageThread.reset();
+        
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:RCTJavaScriptDidFailToLoadNotification
+         object:self->_parentBridge userInfo:@{@"bridge": self, @"error": error}];
+        
+        if ([error userInfo][RCTJSRawStackTraceKey]) {
+            [redBox showErrorMessage:[error localizedDescription]
+                        withRawStack:[error userInfo][RCTJSRawStackTraceKey]];
+        }
+        
+        RCTFatal(error);
+    });
+}
+
 
 /**
  * Prevent super from calling setUp (that'd create another batchedBridge)
@@ -120,6 +252,7 @@
     [_performanceLogger markStopForTag:RCTPLNativeModuleInit];
     
     // This doesn't really do anything.  The real work happens in initializeBridge.
+#warning 因为是一个实例变量，还传递了一个new Instance，所以暂时理解为_reactInstance使用了一个新创建的Instance来进行了实例化。
     _reactInstance.reset(new Instance);
     
     __weak RCTCxxBridge *weakSelf = self;
@@ -140,6 +273,7 @@
             // 最安全的分配和使用动态内存的方法是调用make_shared库函数，此函数在动态内存中分配一个对象并初始化它，
             // 返回指向此对象的shared_ptr。创建时make_shared使用给定的参数来构造给定类型的对象。
             // 这里就是使用空指针nullptr创建了一个JSCExecutorFactory
+            // 这里只是一个使用默认的初始化函数，参数还是个nullptr，相当于什么都没做
             executorFactory = std::make_shared<JSCExecutorFactory>(nullptr);
         }
     } else {
@@ -185,6 +319,44 @@
             [strongSelf executeSourceCode:sourceCode sync:NO];
         }
     });
+    RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
+}
+
+
+- (void)_initializeBridge:(std::shared_ptr<JSExecutorFactory>)executorFactory
+{
+    if (!self.valid) {
+        return;
+    }
+    
+    RCTAssertJSThread();
+    __weak RCTCxxBridge *weakSelf = self;
+    // _jsMessageThread在初始化时内部保存了jsThread的runLoop，和一个错误回调Block
+    _jsMessageThread = std::make_shared<RCTMessageThread>([NSRunLoop currentRunLoop], ^(NSError *error) {
+        if (error) {
+            [weakSelf handleError:error];
+        }
+    });
+    
+    RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge initializeBridge:]", nil);
+    // This can only be false if the bridge was invalidated before startup completed
+    // 在start中通过new Instance创建了一个。
+    if (_reactInstance) {
+#if RCT_DEV
+        executorFactory = std::make_shared<GetDescAdapter>(self, executorFactory);
+#endif
+        
+        [self _initializeBridgeLocked:executorFactory];
+        
+#if RCT_PROFILE
+        if (RCTProfileIsProfiling()) {
+            _reactInstance->setGlobalVariable(
+                                              "__RCTProfileIsProfiling",
+                                              std::make_unique<JSBigStdString>("true"));
+        }
+#endif
+    }
+    
     RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 

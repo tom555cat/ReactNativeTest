@@ -6,11 +6,10 @@
 //  Copyright © 2019 tongleiming. All rights reserved.
 //
 
-#ifndef JSExecutorFactory_hpp
-#define JSExecutorFactory_hpp
+#include <memory>
 
-#include <stdio.h>
 #include "CxxNativeModule.h"
+#include "MessageQueueThread.h"
 
 namespace facebook {
 namespace react {
@@ -44,6 +43,3 @@ class RN_EXPORT JSExecutor {
 }
 }
 
-
-
-#endif /* JSExecutorFactory_hpp */

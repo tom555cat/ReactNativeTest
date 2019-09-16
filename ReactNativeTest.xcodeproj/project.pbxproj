@@ -20,11 +20,15 @@
 		8E20F449231FA750006BB67F /* RCTModuleData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E20F448231FA750006BB67F /* RCTModuleData.mm */; };
 		8E6B9CD32328C6DD00D1C552 /* RCTDisplayLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */; };
 		8E6B9CD62328CE0000D1C552 /* RCTFrameUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD52328CE0000D1C552 /* RCTFrameUpdate.m */; };
-		8E6B9CDA2329F0CE00D1C552 /* JSExecutorFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD82329F0CE00D1C552 /* JSExecutorFactory.cpp */; };
+		8E6B9CDA2329F0CE00D1C552 /* JSExecutorFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD82329F0CE00D1C552 /* JSExecutorFactory.mm */; };
 		8E6B9CDD2329F4B100D1C552 /* CxxNativeModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CDB2329F4B100D1C552 /* CxxNativeModule.cpp */; };
 		8E6B9CE02329F95000D1C552 /* JSCExecutorFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CDE2329F95000D1C552 /* JSCExecutorFactory.mm */; };
 		8E6B9CE42329FAF200D1C552 /* JSExecutor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CE22329FAF200D1C552 /* JSExecutor.cpp */; };
 		8E6B9CE72329FC8D00D1C552 /* JSIExecutor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CE52329FC8D00D1C552 /* JSIExecutor.cpp */; };
+		E9749AF8232CE7B90015CC08 /* Instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9749AF6232CE7B90015CC08 /* Instance.cpp */; };
+		E9AAEBEB232C926800EBB45C /* RCTCxxUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9AAEBE9232C926800EBB45C /* RCTCxxUtils.mm */; };
+		E9AAEBEE232C998100EBB45C /* RCTMessageThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9AAEBEC232C998100EBB45C /* RCTMessageThread.mm */; };
+		E9AAEBF1232C9BA200EBB45C /* MessageQueueThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9AAEBEF232C9BA200EBB45C /* MessageQueueThread.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,7 +59,7 @@
 		8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTDisplayLink.m; sourceTree = "<group>"; };
 		8E6B9CD42328CE0000D1C552 /* RCTFrameUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTFrameUpdate.h; sourceTree = "<group>"; };
 		8E6B9CD52328CE0000D1C552 /* RCTFrameUpdate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTFrameUpdate.m; sourceTree = "<group>"; };
-		8E6B9CD82329F0CE00D1C552 /* JSExecutorFactory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JSExecutorFactory.cpp; sourceTree = "<group>"; };
+		8E6B9CD82329F0CE00D1C552 /* JSExecutorFactory.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = JSExecutorFactory.mm; sourceTree = "<group>"; };
 		8E6B9CD92329F0CE00D1C552 /* JSExecutorFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSExecutorFactory.h; sourceTree = "<group>"; };
 		8E6B9CDB2329F4B100D1C552 /* CxxNativeModule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CxxNativeModule.cpp; sourceTree = "<group>"; };
 		8E6B9CDC2329F4B100D1C552 /* CxxNativeModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CxxNativeModule.h; sourceTree = "<group>"; };
@@ -65,6 +69,15 @@
 		8E6B9CE32329FAF200D1C552 /* JSExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSExecutor.h; sourceTree = "<group>"; };
 		8E6B9CE52329FC8D00D1C552 /* JSIExecutor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JSIExecutor.cpp; sourceTree = "<group>"; };
 		8E6B9CE62329FC8D00D1C552 /* JSIExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSIExecutor.h; sourceTree = "<group>"; };
+		E9749AF5232CDE490015CC08 /* RCTJavaScriptExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTJavaScriptExecutor.h; sourceTree = "<group>"; };
+		E9749AF6232CE7B90015CC08 /* Instance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Instance.cpp; sourceTree = "<group>"; };
+		E9749AF7232CE7B90015CC08 /* Instance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Instance.h; sourceTree = "<group>"; };
+		E9AAEBE9232C926800EBB45C /* RCTCxxUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTCxxUtils.mm; sourceTree = "<group>"; };
+		E9AAEBEA232C926800EBB45C /* RCTCxxUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTCxxUtils.h; sourceTree = "<group>"; };
+		E9AAEBEC232C998100EBB45C /* RCTMessageThread.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTMessageThread.mm; sourceTree = "<group>"; };
+		E9AAEBED232C998100EBB45C /* RCTMessageThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTMessageThread.h; sourceTree = "<group>"; };
+		E9AAEBEF232C9BA200EBB45C /* MessageQueueThread.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MessageQueueThread.mm; sourceTree = "<group>"; };
+		E9AAEBF0232C9BA200EBB45C /* MessageQueueThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageQueueThread.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +146,11 @@
 				8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */,
 				8E6B9CD42328CE0000D1C552 /* RCTFrameUpdate.h */,
 				8E6B9CD52328CE0000D1C552 /* RCTFrameUpdate.m */,
+				E9AAEBED232C998100EBB45C /* RCTMessageThread.h */,
+				E9AAEBEC232C998100EBB45C /* RCTMessageThread.mm */,
+				E9AAEBF0232C9BA200EBB45C /* MessageQueueThread.h */,
+				E9AAEBEF232C9BA200EBB45C /* MessageQueueThread.mm */,
+				E9749AF5232CDE490015CC08 /* RCTJavaScriptExecutor.h */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -143,6 +161,8 @@
 				8E1ECE1F2314D1DE00C8603D /* RCTCxxBridge.mm */,
 				8E6B9CDE2329F95000D1C552 /* JSCExecutorFactory.mm */,
 				8E6B9CDF2329F95000D1C552 /* JSCExecutorFactory.h */,
+				E9AAEBE9232C926800EBB45C /* RCTCxxUtils.mm */,
+				E9AAEBEA232C926800EBB45C /* RCTCxxUtils.h */,
 			);
 			path = CxxBridge;
 			sourceTree = "<group>";
@@ -150,12 +170,14 @@
 		8E6B9CD72329F06B00D1C552 /* cxxreact */ = {
 			isa = PBXGroup;
 			children = (
-				8E6B9CD82329F0CE00D1C552 /* JSExecutorFactory.cpp */,
+				8E6B9CD82329F0CE00D1C552 /* JSExecutorFactory.mm */,
 				8E6B9CD92329F0CE00D1C552 /* JSExecutorFactory.h */,
 				8E6B9CDB2329F4B100D1C552 /* CxxNativeModule.cpp */,
 				8E6B9CDC2329F4B100D1C552 /* CxxNativeModule.h */,
 				8E6B9CE22329FAF200D1C552 /* JSExecutor.cpp */,
 				8E6B9CE32329FAF200D1C552 /* JSExecutor.h */,
+				E9749AF6232CE7B90015CC08 /* Instance.cpp */,
+				E9749AF7232CE7B90015CC08 /* Instance.h */,
 			);
 			path = cxxreact;
 			sourceTree = "<group>";
@@ -241,8 +263,9 @@
 			files = (
 				8E6B9CE02329F95000D1C552 /* JSCExecutorFactory.mm in Sources */,
 				8E1ECE172314C8F600C8603D /* RCTBridge.m in Sources */,
-				8E6B9CDA2329F0CE00D1C552 /* JSExecutorFactory.cpp in Sources */,
+				8E6B9CDA2329F0CE00D1C552 /* JSExecutorFactory.mm in Sources */,
 				8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */,
+				E9749AF8232CE7B90015CC08 /* Instance.cpp in Sources */,
 				8E6B9CD62328CE0000D1C552 /* RCTFrameUpdate.m in Sources */,
 				8E1ECE032314C59000C8603D /* ViewController.m in Sources */,
 				8E20F449231FA750006BB67F /* RCTModuleData.mm in Sources */,
@@ -252,8 +275,11 @@
 				8E6B9CDD2329F4B100D1C552 /* CxxNativeModule.cpp in Sources */,
 				8E1ECE002314C59000C8603D /* AppDelegate.m in Sources */,
 				8E6B9CE72329FC8D00D1C552 /* JSIExecutor.cpp in Sources */,
+				E9AAEBEB232C926800EBB45C /* RCTCxxUtils.mm in Sources */,
 				8E1ECEAC23177DAC00C8603D /* RCTUtils.m in Sources */,
 				8E6B9CD32328C6DD00D1C552 /* RCTDisplayLink.m in Sources */,
+				E9AAEBEE232C998100EBB45C /* RCTMessageThread.mm in Sources */,
+				E9AAEBF1232C9BA200EBB45C /* MessageQueueThread.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

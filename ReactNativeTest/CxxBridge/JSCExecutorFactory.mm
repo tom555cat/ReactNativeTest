@@ -26,6 +26,5 @@ std::unique_ptr<JSExecutor> JSCExecutorFactory::createJSExecutor(
        std::move(runtimeInstaller_));
 }
     
-    
 }
 }

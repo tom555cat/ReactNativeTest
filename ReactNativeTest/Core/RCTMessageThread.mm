@@ -25,5 +25,39 @@ RCTMessageThread::~RCTMessageThread() {
     CFRelease(m_cfRunLoop);
 }
     
+void RCTMessageThread::runOnQueueSync(std::function<void()>&& func) {
+    if (m_shutdown) {
+        return;
+    }
+    runSync([this, func=std::move(func)] {
+        if (!m_shutdown) {
+            tryFunc(func);
+        }
+    });
+}
+    
+// This is analogous to dispatch_sync
+void RCTMessageThread::runSync(std::function<void()> func) {
+    if (m_cfRunLoop == CFRunLoopGetCurrent()) {
+        func();
+        return;
+    }
+    
+    dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+    runAsync([func=std::make_shared<std::function<void()>>(std::move(func)), &sema] {
+        (*func)();
+        dispatch_semaphore_signal(sema);
+    });
+    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+}
+    
+// This is analogous to dispatch_async
+#warning 异步地执行一个任务，难道就是这个样子？
+void RCTMessageThread::runAsync(std::function<void()> func) {
+    CFRunLoopPerformBlock(m_cfRunLoop, kCFRunLoopCommonModes, ^{ func(); });
+    CFRunLoopWakeUp(m_cfRunLoop);
+}
+
+    
 }
 }

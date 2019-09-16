@@ -28,6 +28,19 @@ using namespace facebook::react;
 
 @end
 
+#warning struct在C++中的继承
+#warning 在struct中使用__weak
+#warning struct中覆盖父类方法
+struct RCTInstanceCallback : public InstanceCallback {
+    __weak RCTCxxBridge *bridge_;
+    RCTInstanceCallback(RCTCxxBridge *bridge): bridge_(bridge) {};
+    void onBatchComplete() override {
+        // There's no interface to call this per partial batch
+        [bridge_ partialBatchDidFlush];
+        [bridge_ batchDidComplete];
+    }
+};
+
 @implementation RCTCxxBridge
 {
     BOOL _moduleRegistryCreated;
@@ -51,6 +64,8 @@ using namespace facebook::react;
     
     // 这个C++线程类持有了jsThread的runLoop
     std::shared_ptr<RCTMessageThread> _jsMessageThread;
+#warning 这个锁保护了哪些资源的竞争?
+    std::mutex _moduleRegistryLock;
     
     // This is uniquely owned, but weak_ptr is used.
     std::shared_ptr<Instance> _reactInstance;
@@ -340,7 +355,7 @@ using namespace facebook::react;
     
     RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge initializeBridge:]", nil);
     // This can only be false if the bridge was invalidated before startup completed
-    // 在start中通过new Instance创建了一个。
+#warning 在start中通过new Instance创建了一个。
     if (_reactInstance) {
 #if RCT_DEV
         executorFactory = std::make_shared<GetDescAdapter>(self, executorFactory);
@@ -358,6 +373,49 @@ using namespace facebook::react;
     }
     
     RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
+}
+
+- (std::shared_ptr<ModuleRegistry>)_buildModuleRegistryUnlocked
+{
+    if (!self.valid) {
+        return {};
+    }
+    
+    [_performanceLogger markStartForTag:RCTPLNativeModulePrepareConfig];
+    RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge buildModuleRegistry]", nil);
+    
+    __weak __typeof(self) weakSelf = self;
+    ModuleRegistry::ModuleNotFoundCallback moduleNotFoundCallback = ^bool(const std::string &name) {
+        __strong __typeof(weakSelf) strongSelf = weakSelf;
+        return [strongSelf.delegate respondsToSelector:@selector(bridge:didNotFindModule:)] &&
+        [strongSelf.delegate bridge:strongSelf didNotFindModule:@(name.c_str())];
+    };
+    
+    // createNativeModules(_moduleDataByID, self, _reactInstance),
+    // _moduleDataByID就是moduleData的数组
+    auto registry = std::make_shared<ModuleRegistry>(
+                                                     createNativeModules(_moduleDataByID, self, _reactInstance),
+                                                     moduleNotFoundCallback);
+    
+    [_performanceLogger markStopForTag:RCTPLNativeModulePrepareConfig];
+    RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
+    
+    return registry;
+}
+
+- (void)_initializeBridgeLocked:(std::shared_ptr<JSExecutorFactory>)executorFactory
+{
+    std::lock_guard<std::mutex> guard(_moduleRegistryLock);
+    
+    // This is async, but any calls into JS are blocked by the m_syncReady CV in Instance
+    // [self _buildModuleRegistryUnlocked]返回的就是module的注册结果，被称为moduleRegistry
+    // 如果有很多回调，一个一个地传递搞得参数会很多，所以直接搞了一个回调结构体
+    _reactInstance->initializeBridge(
+                                     std::make_unique<RCTInstanceCallback>(self),
+                                     executorFactory,
+                                     _jsMessageThread,
+                                     [self _buildModuleRegistryUnlocked]);
+    _moduleRegistryCreated = YES;
 }
 
 // 只有在RCTBridgeModule中的代理方法或者moduleProvider才能提供额外的module，

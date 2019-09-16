@@ -20,6 +20,8 @@ public:
     RCTMessageThread(NSRunLoop *runLoop, RCTJavaScriptCompleteBlock errorBlock);
     ~RCTMessageThread() override;
     
+    void runOnQueueSync(std::function<void()>&&) override;
+    
 private:
     void tryFunc(const std::function<void()>& func);
     void runAsync(std::function<void()> func);

@@ -8,6 +8,30 @@
 
 #include "RCTCxxUtils.h"
 
+namespace facebook {
+namespace react {
+    
+    
+std::vector<std::unique_ptr<NativeModule>> createNativeModules(NSArray<RCTModuleData *> *modules, RCTBridge *bridge, const std::shared_ptr<Instance> &instance)
+{
+    std::vector<std::unique_ptr<NativeModule>> nativeModules;
+    for (RCTModuleData *moduleData in modules) {
+        // 判断是不是C++的native module，目前没有实现C++的module
+        if ([moduleData.moduleClass isSubclassOfClass:[RCTCxxModule class]]) {
+            nativeModules.emplace_back(std::make_unique<CxxNativeModule>(
+                                                                         instance,
+                                                                         [moduleData.name UTF8String],
+                                                                         [moduleData] { return [(RCTCxxModule *)(moduleData.instance) createModule]; },
+                                                                         std::make_shared<DispatchMessageQueueThread>(moduleData)));
+        } else {
+            // emplace_back相当于push_back
+            nativeModules.emplace_back(std::make_unique<RCTNativeModule>(bridge, moduleData));
+        }
+    }
+    return nativeModules;
+}
+    
+    
 NSError *tryAndReturnError(const std::function<void()>& func)
 {
     try {
@@ -32,3 +56,8 @@ NSError *tryAndReturnError(const std::function<void()>& func)
         return RCTErrorWithMessage(@"non-std C++ exception");
     }
 }
+    
+}
+}
+
+

@@ -20,6 +20,9 @@
 		8E20F449231FA750006BB67F /* RCTModuleData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E20F448231FA750006BB67F /* RCTModuleData.mm */; };
 		8E230A71232F2E8B00AD9C01 /* ModuleRegistry.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E230A6F232F2E8B00AD9C01 /* ModuleRegistry.mm */; };
 		8E230A77232F813E00AD9C01 /* RCTNativeModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E230A75232F813E00AD9C01 /* RCTNativeModule.mm */; };
+		8E230A7A2330720B00AD9C01 /* NativeToJsBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E230A782330720B00AD9C01 /* NativeToJsBridge.cpp */; };
+		8E230A7E23308F6900AD9C01 /* JSCRuntime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E230A7C23308F6900AD9C01 /* JSCRuntime.cpp */; };
+		8E230A8123308FF300AD9C01 /* jsi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E230A7F23308FF300AD9C01 /* jsi.cpp */; };
 		8E6B9CD32328C6DD00D1C552 /* RCTDisplayLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */; };
 		8E6B9CD62328CE0000D1C552 /* RCTFrameUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD52328CE0000D1C552 /* RCTFrameUpdate.m */; };
 		8E6B9CDA2329F0CE00D1C552 /* JSExecutorFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E6B9CD82329F0CE00D1C552 /* JSExecutorFactory.mm */; };
@@ -62,6 +65,12 @@
 		8E230A73232F300C00AD9C01 /* NativeModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeModule.h; sourceTree = "<group>"; };
 		8E230A75232F813E00AD9C01 /* RCTNativeModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCTNativeModule.mm; sourceTree = "<group>"; };
 		8E230A76232F813E00AD9C01 /* RCTNativeModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTNativeModule.h; sourceTree = "<group>"; };
+		8E230A782330720B00AD9C01 /* NativeToJsBridge.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NativeToJsBridge.cpp; sourceTree = "<group>"; };
+		8E230A792330720B00AD9C01 /* NativeToJsBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeToJsBridge.h; sourceTree = "<group>"; };
+		8E230A7C23308F6900AD9C01 /* JSCRuntime.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JSCRuntime.cpp; sourceTree = "<group>"; };
+		8E230A7D23308F6900AD9C01 /* JSCRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSCRuntime.h; sourceTree = "<group>"; };
+		8E230A7F23308FF300AD9C01 /* jsi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = jsi.cpp; sourceTree = "<group>"; };
+		8E230A8023308FF300AD9C01 /* jsi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsi.h; sourceTree = "<group>"; };
 		8E6B9CD12328C6DD00D1C552 /* RCTDisplayLink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTDisplayLink.h; sourceTree = "<group>"; };
 		8E6B9CD22328C6DD00D1C552 /* RCTDisplayLink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTDisplayLink.m; sourceTree = "<group>"; };
 		8E6B9CD42328CE0000D1C552 /* RCTFrameUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTFrameUpdate.h; sourceTree = "<group>"; };
@@ -117,6 +126,7 @@
 		8E1ECDFD2314C59000C8603D /* ReactNativeTest */ = {
 			isa = PBXGroup;
 			children = (
+				8E230A7B23308F4700AD9C01 /* jsi */,
 				8E6B9CE12329FAB200D1C552 /* JSIExecutor */,
 				8E6B9CD72329F06B00D1C552 /* cxxreact */,
 				8E1ECE1C2314D13000C8603D /* CxxBridge */,
@@ -176,6 +186,17 @@
 			path = CxxBridge;
 			sourceTree = "<group>";
 		};
+		8E230A7B23308F4700AD9C01 /* jsi */ = {
+			isa = PBXGroup;
+			children = (
+				8E230A7C23308F6900AD9C01 /* JSCRuntime.cpp */,
+				8E230A7D23308F6900AD9C01 /* JSCRuntime.h */,
+				8E230A7F23308FF300AD9C01 /* jsi.cpp */,
+				8E230A8023308FF300AD9C01 /* jsi.h */,
+			);
+			path = jsi;
+			sourceTree = "<group>";
+		};
 		8E6B9CD72329F06B00D1C552 /* cxxreact */ = {
 			isa = PBXGroup;
 			children = (
@@ -190,6 +211,8 @@
 				8E230A6F232F2E8B00AD9C01 /* ModuleRegistry.mm */,
 				8E230A70232F2E8B00AD9C01 /* ModuleRegistry.h */,
 				8E230A73232F300C00AD9C01 /* NativeModule.h */,
+				8E230A782330720B00AD9C01 /* NativeToJsBridge.cpp */,
+				8E230A792330720B00AD9C01 /* NativeToJsBridge.h */,
 			);
 			path = cxxreact;
 			sourceTree = "<group>";
@@ -278,6 +301,8 @@
 				8E6B9CDA2329F0CE00D1C552 /* JSExecutorFactory.mm in Sources */,
 				8E1ECE202314D1DE00C8603D /* RCTCxxBridge.mm in Sources */,
 				E9749AF8232CE7B90015CC08 /* Instance.mm in Sources */,
+				8E230A7A2330720B00AD9C01 /* NativeToJsBridge.cpp in Sources */,
+				8E230A8123308FF300AD9C01 /* jsi.cpp in Sources */,
 				8E6B9CD62328CE0000D1C552 /* RCTFrameUpdate.m in Sources */,
 				8E1ECE032314C59000C8603D /* ViewController.m in Sources */,
 				8E20F449231FA750006BB67F /* RCTModuleData.mm in Sources */,
@@ -289,6 +314,7 @@
 				8E6B9CE72329FC8D00D1C552 /* JSIExecutor.cpp in Sources */,
 				8E230A77232F813E00AD9C01 /* RCTNativeModule.mm in Sources */,
 				E9AAEBEB232C926800EBB45C /* RCTCxxUtils.mm in Sources */,
+				8E230A7E23308F6900AD9C01 /* JSCRuntime.cpp in Sources */,
 				8E1ECEAC23177DAC00C8603D /* RCTUtils.m in Sources */,
 				8E6B9CD32328C6DD00D1C552 /* RCTDisplayLink.m in Sources */,
 				E9AAEBEE232C998100EBB45C /* RCTMessageThread.mm in Sources */,

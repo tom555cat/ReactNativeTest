@@ -17,6 +17,14 @@ namespace react {
 
 class JSIExecutor : public JSExecutor {
     
+public:
+    JSIExecutor(
+        std::shared_ptr<jsi::Runtime> runtime,
+        std::shared_ptr<ExecutorDelegate> delegate,
+        Logger logger,
+        const JSIScopedTimeoutInvoker& timeoutInvoker,
+        RuntimeInstaller runtimeInstaller);
+    
 };
     
 }

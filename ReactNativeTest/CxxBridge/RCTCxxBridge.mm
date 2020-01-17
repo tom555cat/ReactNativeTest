@@ -259,6 +259,7 @@ struct RCTInstanceCallback : public InstanceCallback {
     
     // Initialize all native modules that cannot be loaded lazily
     // RCTGetModuleClasses()返回所有通过+load注册的class的数组
+    // 意味着有些native modules可以懒加载，
     (void)[self _initializeModules:RCTGetModuleClasses() withDispatchGroup:prepareBridge lazilyDiscovered:NO];
     
     // 只有在debug状态才会执行

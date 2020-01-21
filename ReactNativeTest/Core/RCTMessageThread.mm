@@ -24,6 +24,18 @@ RCTMessageThread::~RCTMessageThread() {
 #warning 在构造函数中从ARC到C++，自己维护了生命周期
     CFRelease(m_cfRunLoop);
 }
+
+void RCTMessageThread::runOnQueue(std::function<void()>&& func) {
+    if (m_shutdown) {
+        return;
+    }
+    
+    runAsync([this, func=std::make_shared<std::function<void()>>(std::move(func))] {
+        if (!m_shutdown) {
+            tryFunc(*func);
+        }
+    });
+}
     
 void RCTMessageThread::runOnQueueSync(std::function<void()>&& func) {
     if (m_shutdown) {

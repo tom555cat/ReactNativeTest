@@ -25,6 +25,18 @@ public:
         const JSIScopedTimeoutInvoker& timeoutInvoker,
         RuntimeInstaller runtimeInstaller);
     
+    // 调用JS代码
+    void callFunction(
+        const std::string& moduleId,
+        const std::string& methodId,
+        const folly::dynamic& arguments) override;
+    
+private:
+    void bindBridge();
+    
+    std::shared_ptr<jsi::Runtime> runtime_;
+    
+    folly::Optional<jsi::Function> callFunctionReturnFlushedQueue_;
 };
     
 }

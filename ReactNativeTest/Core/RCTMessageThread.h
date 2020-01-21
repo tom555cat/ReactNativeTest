@@ -20,6 +20,9 @@ public:
     RCTMessageThread(NSRunLoop *runLoop, RCTJavaScriptCompleteBlock errorBlock);
     ~RCTMessageThread() override;
     
+    // 在m_cfRunLoop上异步地执行函数
+    void runOnQueue(std::function<void()>&&) override;
+    // 在m_cfRunLoop上保证同步地执行函数
     void runOnQueueSync(std::function<void()>&&) override;
     
 private:

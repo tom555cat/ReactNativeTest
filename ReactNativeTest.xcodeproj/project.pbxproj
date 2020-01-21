@@ -85,6 +85,7 @@
 		8E6B9CE32329FAF200D1C552 /* JSExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSExecutor.h; sourceTree = "<group>"; };
 		8E6B9CE52329FC8D00D1C552 /* JSIExecutor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = JSIExecutor.cpp; sourceTree = "<group>"; };
 		8E6B9CE62329FC8D00D1C552 /* JSIExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSIExecutor.h; sourceTree = "<group>"; };
+		8E99346023D579F800EA73A2 /* jsi-inl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "jsi-inl.h"; sourceTree = "<group>"; };
 		E9749AF5232CDE490015CC08 /* RCTJavaScriptExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTJavaScriptExecutor.h; sourceTree = "<group>"; };
 		E9749AF6232CE7B90015CC08 /* Instance.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Instance.mm; sourceTree = "<group>"; };
 		E9749AF7232CE7B90015CC08 /* Instance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Instance.h; sourceTree = "<group>"; };
@@ -193,6 +194,7 @@
 				8E230A7D23308F6900AD9C01 /* JSCRuntime.h */,
 				8E230A7F23308FF300AD9C01 /* jsi.cpp */,
 				8E230A8023308FF300AD9C01 /* jsi.h */,
+				8E99346023D579F800EA73A2 /* jsi-inl.h */,
 			);
 			path = jsi;
 			sourceTree = "<group>";

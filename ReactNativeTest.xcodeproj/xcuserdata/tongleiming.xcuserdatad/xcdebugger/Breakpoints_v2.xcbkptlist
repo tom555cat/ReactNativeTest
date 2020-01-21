@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ReactNativeTest/JSIExecutor/JSIExecutor.h"
+            timestampString = "601273222.1111929"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "JSIExecutor( std::shared_ptr&lt;jsi::Runtime&gt; runtime, std::shared_ptr&lt;ExecutorDelegate&gt; delegate, Logger logger, const JSIScopedTimeoutInvoker&amp; timeoutInvoker, RuntimeInstaller runtimeInstaller)"
+            landmarkType = "6">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

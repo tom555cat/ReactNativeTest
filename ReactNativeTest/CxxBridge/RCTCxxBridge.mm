@@ -62,7 +62,7 @@ struct RCTInstanceCallback : public InstanceCallback {
 #warning 这个线程，什么内容跑在了这个线程上
     NSThread *_jsThread;
     
-    // 这个C++线程类持有了jsThread的runLoop
+    // 这个C++线程类持有了_jsThread的runLoop
     std::shared_ptr<RCTMessageThread> _jsMessageThread;
 #warning 这个锁保护了哪些资源的竞争?
     std::mutex _moduleRegistryLock;
@@ -338,7 +338,8 @@ struct RCTInstanceCallback : public InstanceCallback {
     RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
-
+// 当前方法是在RCTCxxBridge的"NSThread *_jsThread"上执行的；
+// 所以在内部创建_jsMessageThread的时候，使用的第一个参数是_jsThread的runLoop。
 - (void)_initializeBridge:(std::shared_ptr<JSExecutorFactory>)executorFactory
 {
     if (!self.valid) {
@@ -411,6 +412,8 @@ struct RCTInstanceCallback : public InstanceCallback {
     // This is async, but any calls into JS are blocked by the m_syncReady CV in Instance
     // [self _buildModuleRegistryUnlocked]返回的就是module的注册结果，被称为moduleRegistry
     // 如果有很多回调，一个一个地传递搞得参数会很多，所以直接搞了一个回调结构体
+    
+    // 这个executorFactory
     _reactInstance->initializeBridge(
                                      std::make_unique<RCTInstanceCallback>(self),
                                      executorFactory,
@@ -705,5 +708,33 @@ struct RCTInstanceCallback : public InstanceCallback {
                        withModuleData:(RCTModuleData *)moduleData {
     [_displayLink registerModuleForFrameUpdates:module withModuleData:moduleData];
 }
+
+#pragma mark - RCTBridge methods
+
+
+// 能从任何线程调用
+- (void)enqueueJSCall:(NSString *)module method:(NSString *)method args:(NSArray *)args completion:(dispatch_block_t)completion {
+    if (!self.valid) {
+        return;
+    }
+
+#warning 查看这个宏怎么写
+    RCTProfileBeginFlowEvent();
+    __weak __typeof(self) weakSelf = self;
+    [self _runAfterLoad:^(){
+        RCTProfileEndFlowEvent();
+        
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        
+        if (strongSelf->_reactInstance) {
+            strongSelf->_reactInstance->call
+        }
+        
+    }];
+}
+
 
 @end
